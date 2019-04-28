@@ -5,7 +5,7 @@ import * as request from 'request-promise';
 import {APIErrors, errorFromElement} from './error';
 import {Endpoints} from './endpoints';
 import {Builder, parseString} from 'xml2js';
-import {XMLElement} from './utils/xml-element';
+import {XMLElement} from './utils';
 import {PlayInfo} from './play-info';
 import {KeyState, KeyValue} from './special-types';
 import {NowPlaying, nowPlayingFromElement} from './now-playing';
@@ -19,7 +19,7 @@ import {Preset, presetFromElement} from './preset';
 import * as Bluebird from 'bluebird';
 import {Group, groupFromElement} from './group';
 
-const XMLParse = Bluebird.promisify(parseString);
+const XMLParsePromise = Bluebird.promisify(parseString);
 
 export class API {
 
@@ -64,7 +64,7 @@ export class API {
             }
             xml = err.response.body;
         }
-        const data = await XMLParse(xml, {
+        const data = await XMLParsePromise(xml, {
             trim: true
         });
         const root = new XMLElement(data);

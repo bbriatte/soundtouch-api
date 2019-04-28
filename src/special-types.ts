@@ -38,7 +38,8 @@ export enum PlayStatus {
 
 export enum SourceStatus {
     unavailable = 'UNAVAILABLE',
-    ready = 'READY'
+    ready = 'READY',
+    standBy = 'STANDBY'
 }
 
 export enum ShuffleStatus {
