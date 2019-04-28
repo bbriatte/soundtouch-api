@@ -20,10 +20,10 @@ import {Group, groupFromElement} from './group';
 import {promisify} from 'util';
 
 const XMLParsePromise = promisify(
-    (xml: convertableToString, options: OptionsV2, cb: Function) => parseString(
+    (xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(
         xml,
         options,
-        (err, ...results) => cb(err, results)
+        cb
     )
 );
 
@@ -98,7 +98,7 @@ export class API {
         const element = await this.post(Endpoints.volume, {
             volume: value
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     async getVolume(): Promise<Volume | undefined> {
@@ -113,7 +113,7 @@ export class API {
         const element = await this.post(Endpoints.speaker, {
             play_info: playInfo
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     private async key(state: KeyState, value: KeyValue): Promise<boolean> {
@@ -126,7 +126,7 @@ export class API {
                 _: value
             }
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     async pressKey(value: KeyValue): Promise<boolean> {
@@ -161,7 +161,7 @@ export class API {
                 }
             }
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     async getSources(): Promise<Sources | undefined> {
@@ -208,7 +208,7 @@ export class API {
                 })
             }
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     async getBassCapabilities(): Promise<BassCapabilities | undefined> {
@@ -231,7 +231,7 @@ export class API {
         const element = await this.post(Endpoints.bass, {
             bass: value
         });
-        return element ? element.hasChild('status') : false;
+        return element ? element.getText('status') !== undefined : false;
     }
 
     async getPresets(): Promise<Preset[] | undefined> {
