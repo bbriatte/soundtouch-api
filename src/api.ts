@@ -4,7 +4,7 @@ import {Info, infoFromElement} from './info';
 import * as request from 'request-promise';
 import {APIErrors, errorFromElement} from './error';
 import {Endpoints} from './endpoints';
-import {Builder, parseString} from 'xml2js';
+import {Builder, convertableToString, OptionsV2, parseString} from 'xml2js';
 import {XMLElement} from './utils';
 import {PlayInfo} from './play-info';
 import {KeyState, KeyValue} from './special-types';
@@ -16,10 +16,16 @@ import {Member} from './member';
 import {BassCapabilities, bassCapabilitiesFromElement} from './bass-capabilities';
 import {Bass, bassFromElement} from './bass';
 import {Preset, presetFromElement} from './preset';
-import * as Bluebird from 'bluebird';
 import {Group, groupFromElement} from './group';
+import {promisify} from 'util';
 
-const XMLParsePromise = Bluebird.promisify(parseString);
+const XMLParsePromise = promisify(
+    (xml: convertableToString, options: OptionsV2, cb: Function) => parseString(
+        xml,
+        options,
+        (err, ...results) => cb(err, results)
+    )
+);
 
 export class API {
 
