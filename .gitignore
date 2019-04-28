@@ -171,6 +171,7 @@ modules.xml
 .idea/sonarlint
 
 .idea/encodings.xml
+.idea/vcs.xml
 
 # End of https://www.gitignore.io/api/node,webstorm
 
