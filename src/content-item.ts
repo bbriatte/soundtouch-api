@@ -17,7 +17,7 @@ export function contentItemFromElement(element: XMLElement): ContentItem | undef
         sourceAccount: element.getAttribute('sourceAccount'),
         location: element.getAttribute('location'),
         isPresetable: element.getAttribute('isPresetable') === 'true',
-        itemName: element.getAttribute('itemName'),
+        itemName: element.getText('itemName'),
         containerArt: element.getAttribute('containerArt'),
     }
 }

@@ -19,13 +19,7 @@ import {Preset, presetFromElement} from './preset';
 import {Group, groupFromElement} from './group';
 import {promisify} from 'util';
 
-const XMLParsePromise = promisify(
-    (xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(
-        xml,
-        options,
-        cb
-    )
-);
+const XMLParsePromise = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
 
 export class API {
 
