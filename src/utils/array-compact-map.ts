@@ -1,5 +1,9 @@
-interface Array<T> {
-    compactMap<T,O>(transform: (e: T, index: number, array: T[]) => O | undefined): O[];
+export {}
+
+declare global {
+    interface Array<T> {
+        compactMap<T,O>(transform: (e: T, index: number, array: T[]) => O | undefined): O[];
+    }
 }
 
 Array.prototype.compactMap = function<T,O>(transform: (e: T, index: number, array: T[]) => O | undefined): O[] {
