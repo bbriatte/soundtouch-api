@@ -1,4 +1,4 @@
-import {XMLElement} from './utils/xml-element';
+import {compactMap, XMLElement} from './utils';
 import {Member, memberFromElement} from './member';
 
 export interface Zone {
@@ -12,6 +12,6 @@ export function zoneFromElement(element: XMLElement): Zone | undefined {
     }
     return {
         master: element.getAttribute('master'),
-        members: element.getList('member').compactMap(memberFromElement)
+        members: compactMap(element.getList('member'), memberFromElement)
     }
 }

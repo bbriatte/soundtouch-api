@@ -1,6 +1,6 @@
 import { Component, componentFromElement } from './component';
 import { NetworkInfo, networkInfoFromElement  } from './network-info';
-import { XMLElement } from './utils/xml-element';
+import {compactMap, XMLElement} from './utils';
 
 export interface Info {
     readonly deviceId: string;
@@ -19,7 +19,7 @@ export function infoFromElement(element: XMLElement): Info | undefined {
         deviceId: element.getAttribute('deviceID'),
         name: element.getText('name'),
         type: element.getText('type'),
-        components: element.getChild('components').getList('component').compactMap(componentFromElement),
-        networkInfo: element.getList('networkInfo').compactMap(networkInfoFromElement)
+        components: compactMap(element.getChild('components').getList('component'), componentFromElement),
+        networkInfo: compactMap(element.getList('networkInfo'), networkInfoFromElement)
     };
 }

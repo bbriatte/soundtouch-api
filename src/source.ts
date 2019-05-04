@@ -1,5 +1,5 @@
 import {SourceStatus} from './special-types';
-import {XMLElement} from './utils/xml-element';
+import {compactMap, XMLElement} from './utils';
 
 export interface Sources {
     readonly deviceId: string,
@@ -21,7 +21,7 @@ export function sourcesFromElement(element: XMLElement): Sources | undefined {
     }
     return {
         deviceId: element.getAttribute('deviceID'),
-        items: element.getList('sourceItem').compactMap(sourceFromElement)
+        items: compactMap(element.getList('sourceItem'), sourceFromElement)
     }
 }
 

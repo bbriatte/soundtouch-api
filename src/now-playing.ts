@@ -1,4 +1,4 @@
-import {XMLElement} from './utils/xml-element';
+import {XMLElement} from './utils';
 import {PlayStatus, Rate, RepeatStatus, ShuffleStatus, StreamStatus} from './special-types';
 import {ConnectionStatusInfo, connectionStatusInfoFromElement} from './connection-status-info';
 import {Time, timeFromElement} from './time';

@@ -1,4 +1,4 @@
-import { XMLElement } from './utils/xml-element';
+import {compactMap, XMLElement} from './utils';
 
 export class APIErrors extends Error {
     readonly deviceId?: string;
@@ -12,7 +12,7 @@ export class APIErrors extends Error {
 
     static fromElement(element: XMLElement): APIErrors | undefined {
         return new APIErrors(
-            element.getList('error').compactMap(errorFromElement),
+            compactMap(element.getList('error'), errorFromElement),
             element.getAttribute('deviceID')
         );
     }

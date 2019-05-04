@@ -1,4 +1,4 @@
-import { XMLElement } from './utils/xml-element';
+import {XMLElement} from './utils/xml-element';
 
 export interface Component {
     readonly softwareVersion: string;

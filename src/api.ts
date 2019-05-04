@@ -5,7 +5,7 @@ import * as request from 'request-promise';
 import {APIErrors, errorFromElement} from './error';
 import {Endpoints} from './endpoints';
 import {Builder, convertableToString, OptionsV2, parseString} from 'xml2js';
-import {XMLElement} from './utils';
+import {compactMap, XMLElement} from './utils';
 import {PlayInfo} from './play-info';
 import {KeyState, KeyValue} from './special-types';
 import {NowPlaying, nowPlayingFromElement} from './now-playing';
@@ -233,7 +233,7 @@ export class API {
         if(element.hasChild('presets')) {
             const presets = element.getChild('presets');
             if(presets.hasChild('preset')) {
-                return presets.getList('preset').compactMap(presetFromElement);
+                return compactMap(presets.getList('preset'), presetFromElement);
             }
         }
         return undefined;

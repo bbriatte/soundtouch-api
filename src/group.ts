@@ -1,5 +1,5 @@
-import {XMLElement} from './utils/xml-element';
 import {GroupLocation} from './special-types';
+import {compactMap, XMLElement} from './utils';
 
 export interface Group {
     readonly id: string;
@@ -26,7 +26,7 @@ export function groupFromElement(element: XMLElement): Group | undefined {
         name: element.getText('name'),
         masterDeviceId: element.getText('masterDeviceId'),
         status: element.getText('status'),
-        roles: roles.getList('groupRole').compactMap(roleFromElement)
+        roles: compactMap(roles.getList('groupRole'), roleFromElement)
     }
 }
 
