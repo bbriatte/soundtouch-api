@@ -21,7 +21,7 @@ export function sourcesFromElement(element: XMLElement): Sources | undefined {
     }
     return {
         deviceId: element.getAttribute('deviceID'),
-        items: element.getList('sourceItem').map(sourceFromElement)
+        items: element.getList('sourceItem').compactMap(sourceFromElement)
     }
 }
 

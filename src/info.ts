@@ -19,7 +19,7 @@ export function infoFromElement(element: XMLElement): Info | undefined {
         deviceId: element.getAttribute('deviceID'),
         name: element.getText('name'),
         type: element.getText('type'),
-        components: element.getChild('components').getList('component').map(componentFromElement),
-        networkInfo: element.getList('networkInfo').map(networkInfoFromElement)
+        components: element.getChild('components').getList('component').compactMap(componentFromElement),
+        networkInfo: element.getList('networkInfo').compactMap(networkInfoFromElement)
     };
 }

@@ -26,7 +26,7 @@ export function groupFromElement(element: XMLElement): Group | undefined {
         name: element.getText('name'),
         masterDeviceId: element.getText('masterDeviceId'),
         status: element.getText('status'),
-        roles: roles.getList('groupRole').map(roleFromElement)
+        roles: roles.getList('groupRole').compactMap(roleFromElement)
     }
 }
 

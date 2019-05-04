@@ -12,7 +12,7 @@ export class APIErrors extends Error {
 
     static fromElement(element: XMLElement): APIErrors | undefined {
         return new APIErrors(
-            element.getList('error').map(errorFromElement),
+            element.getList('error').compactMap(errorFromElement),
             element.getAttribute('deviceID')
         );
     }

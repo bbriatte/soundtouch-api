@@ -12,6 +12,6 @@ export function zoneFromElement(element: XMLElement): Zone | undefined {
     }
     return {
         master: element.getAttribute('master'),
-        members: element.getList('member').map(memberFromElement)
+        members: element.getList('member').compactMap(memberFromElement)
     }
 }

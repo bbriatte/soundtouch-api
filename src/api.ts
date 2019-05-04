@@ -233,7 +233,7 @@ export class API {
         if(element.hasChild('presets')) {
             const presets = element.getChild('presets');
             if(presets.hasChild('preset')) {
-                return presets.getList('preset').map(presetFromElement);
+                return presets.getList('preset').compactMap(presetFromElement);
             }
         }
         return undefined;
