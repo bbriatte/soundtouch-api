@@ -8,7 +8,7 @@ import {ContentItem, contentItemFromElement} from './content-item';
 export interface NowPlaying {
     readonly deviceId: string;
     readonly source: string;
-    readonly sourceAccount?: string;
+    readonly sourceAccount: string;
     readonly contentItem: ContentItem;
     readonly track?: string;
     readonly artist?: string;
@@ -42,7 +42,7 @@ export function nowPlayingFromElement(element: XMLElement): NowPlaying | undefin
     return {
         deviceId: element.getAttribute('deviceID'),
         source: element.getAttribute('source'),
-        sourceAccount: element.getAttribute('sourceAccount'),
+        sourceAccount: element.getAttribute('sourceAccount') || '',
         contentItem: contentItemFromElement(element.getChild('ContentItem')),
         track: element.getText('track'),
         artist: element.getText('artist'),

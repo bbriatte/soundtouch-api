@@ -9,7 +9,7 @@ export interface Sources {
 export interface Source {
     readonly name: string;
     readonly source: string;
-    readonly sourceAccount?: string;
+    readonly sourceAccount: string;
     readonly status: SourceStatus;
     readonly isLocal: boolean;
     readonly isMultiroomAllowed: boolean;
@@ -32,7 +32,7 @@ export function sourceFromElement(element: XMLElement): Source | undefined {
     return {
         source: element.getAttribute('source'),
         name: element.getText(),
-        sourceAccount: element.getAttribute('sourceAccount'),
+        sourceAccount: element.getAttribute('sourceAccount') || '',
         status: element.getAttribute('status') as SourceStatus,
         isLocal: element.getAttribute('isLocal') === 'true',
         isMultiroomAllowed: element.getAttribute('multiroomallowed') === 'true'
