@@ -1,6 +1,6 @@
 {
   "name": "soundtouch-api",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "SoundTouch API using TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

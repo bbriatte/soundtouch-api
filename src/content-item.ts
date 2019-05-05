@@ -1,9 +1,9 @@
-import {XMLElement} from './utils/xml-element';
+import {XMLElement} from './utils';
 
 export interface ContentItem {
     readonly source: string;
     readonly sourceAccount: string;
-    readonly isPresetable: boolean;
+    readonly isPresetable?: boolean;
     readonly location?: string;
     readonly itemName?: string;
     readonly containerArt?: string;
@@ -25,10 +25,12 @@ export function contentItemToElement(contentItem: ContentItem): XMLElement {
     let data: any = {
         $: {
             source: contentItem.source,
-            sourceAccount: contentItem.sourceAccount,
-            isPresetable: contentItem.isPresetable
+            sourceAccount: contentItem.sourceAccount
         }
     };
+    if(contentItem.isPresetable !== undefined) {
+        data.$.isPresetable = contentItem.isPresetable;
+    }
     if(contentItem.location !== undefined) {
         data.$.location = contentItem.location;
     }
