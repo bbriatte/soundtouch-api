@@ -11,13 +11,14 @@ import {KeyState, KeyValue} from './special-types';
 import {NowPlaying, nowPlayingFromElement} from './now-playing';
 import {Volume, volumeFromElement} from './volume';
 import {Sources, sourcesFromElement} from './source';
-import {Zone, zoneFromElement} from './zone';
+import {Zone, zoneFromElement, zoneToElement} from './zone';
 import {Member} from './member';
 import {BassCapabilities, bassCapabilitiesFromElement} from './bass-capabilities';
 import {Bass, bassFromElement} from './bass';
 import {Preset, presetFromElement} from './preset';
 import {Group, groupFromElement} from './group';
 import {promisify} from 'util';
+import {ContentItem, contentItemToElement} from './content-item';
 
 const XMLParsePromise = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
 
@@ -146,15 +147,8 @@ export class API {
         return undefined;
     }
 
-    async selectSource(source: string, sourceAccount?: string): Promise<boolean> {
-        const element = await this.post(Endpoints.select, {
-            ContentItem: {
-                $: {
-                    source,
-                    sourceAccount: sourceAccount || ''
-                }
-            }
-        });
+    async selectSource(contentItem: ContentItem): Promise<boolean> {
+        const element = await this.post(Endpoints.select, contentItemToElement(contentItem).data);
         return element ? element.getText('status') !== undefined : false;
     }
 
@@ -187,21 +181,7 @@ export class API {
     }
 
     private async updateZone(zone: Zone, endpoint: Endpoints): Promise<boolean> {
-        const element = await this.post(endpoint, {
-            zone: {
-                $: {
-                    master: zone.master
-                },
-                member: zone.members.map((member: Member) => {
-                    return {
-                        $: {
-                            ipaddress: member.ipAddress
-                        },
-                        _: member.deviceId
-                    }
-                })
-            }
-        });
+        const element = await this.post(endpoint, zoneToElement(zone).data);
         return element ? element.getText('status') !== undefined : false;
     }
 
