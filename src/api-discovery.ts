@@ -13,7 +13,7 @@ export class APIDiscovery {
             type: 'soundtouch',
             protocol: 'tcp',
         }, (service) => {
-            const api = APIFromService(service);
+            const api = _APIFromService(service);
             if(api) {
                 apis.push(api);
             }
@@ -35,7 +35,7 @@ export class APIDiscovery {
                 protocol: 'tcp',
             }, (service) => {
                 if (service && service.name === name) {
-                    const api = APIFromService(service);
+                    const api = _APIFromService(service);
                     if (api) {
                         clearTimeout(timer);
                         bonjour.destroy();
@@ -47,7 +47,7 @@ export class APIDiscovery {
     }
 }
 
-function APIFromService(service?: any): API | undefined {
+function _APIFromService(service?: any): API | undefined {
     if(service
         && service.addresses instanceof Array
         && service.addresses.length > 0) {
