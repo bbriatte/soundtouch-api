@@ -1,6 +1,6 @@
 {
   "name": "soundtouch-api",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "SoundTouch API using TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,14 +15,14 @@
   "license": "BSD",
   "dependencies": {
     "bonjour": "^3.5.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "xml2js": "^0.4.19"
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "@types/bonjour": "^3.5.5",
-    "@types/node": "^11.13.8",
-    "@types/request-promise": "^4.1.43",
-    "@types/xml2js": "^0.4.4"
+    "@types/bonjour": "^3.5.6",
+    "@types/node": "^14.6.4",
+    "@types/request-promise": "^4.1.46",
+    "@types/xml2js": "^0.4.5"
   }
 }
