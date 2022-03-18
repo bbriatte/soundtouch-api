@@ -13,10 +13,21 @@ export function presetFromElement(element: XMLElement): Preset | undefined {
         || !element.hasChild('ContentItem')) {
         return undefined;
     }
+    const id = element.getAttribute('id');
+    const createdOn = element.getAttribute('createdOn');
+    const updatedOn = element.getAttribute('updatedOn');
+    const contentItemElement = element.getChild('ContentItem');
+    if(!id || !createdOn || !updatedOn || !contentItemElement) {
+        return undefined;
+    }
+    const contentItem = contentItemFromElement(contentItemElement);
+    if(!contentItem) {
+        return undefined;
+    }
     return {
-        id: parseInt(element.getAttribute('id')),
-        createdDate: new Date(parseInt(element.getAttribute('createdOn')) * 1000),
-        updatedDate: new Date(parseInt(element.getAttribute('updatedOn')) * 1000),
-        contentItem: contentItemFromElement(element.getChild('ContentItem'))
+        id: parseInt(id),
+        createdDate: new Date(parseInt(createdOn) * 1000),
+        updatedDate: new Date(parseInt(updatedOn) * 1000),
+        contentItem
     }
 }

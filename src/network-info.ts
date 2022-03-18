@@ -9,8 +9,13 @@ export function networkInfoFromElement(element: XMLElement): NetworkInfo | undef
     if (!element.hasChildren(['macAddress', 'ipAddress'])) {
         return undefined;
     }
+    const macAddress = element.getText('macAddress');
+    const ipAddress = element.getText('ipAddress');
+    if(!macAddress || !ipAddress) {
+        return undefined;
+    }
     return {
-        macAddress: element.getText('macAddress'),
-        ipAddress: element.getText('ipAddress')
+        macAddress,
+        ipAddress
     };
 }

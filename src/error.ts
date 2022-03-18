@@ -29,10 +29,16 @@ export function errorFromElement(element: XMLElement): APIError | undefined {
     if (!element.hasAttributes(['value', 'name', 'severity'])) {
         return undefined;
     }
+    const valueString = element.getAttribute('value');
+    const name = element.getAttribute('name');
+    const severity = element.getAttribute('severity');
+    if(!valueString || !name || !severity) {
+        return undefined;
+    }
     return {
-        value: parseInt(element.getAttribute('value')),
-        name: element.getAttribute('name'),
-        severity: element.getAttribute('severity'),
+        value: parseInt(valueString) || 0,
+        name,
+        severity,
         message: element.getText()
     };
 }

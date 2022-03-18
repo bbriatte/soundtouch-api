@@ -19,8 +19,12 @@ export function sourcesFromElement(element: XMLElement): Sources | undefined {
     if(!element.hasAttribute('deviceID')) {
         return undefined;
     }
+    const deviceId = element.getAttribute('deviceID');
+    if(!deviceId) {
+        return undefined;
+    }
     return {
-        deviceId: element.getAttribute('deviceID'),
+        deviceId,
         items: compactMap(element.getList('sourceItem'), sourceFromElement)
     }
 }
@@ -29,11 +33,17 @@ export function sourceFromElement(element: XMLElement): Source | undefined {
     if(!element.hasAttributes(['source', 'status'])) {
         return undefined;
     }
+    const name = element.getText();
+    const source = element.getAttribute('source');
+    const status = element.getAttribute('status');
+    if(!source || ! status || !name) {
+        return undefined
+    }
     return {
-        source: element.getAttribute('source'),
-        name: element.getText(),
+        source,
+        name,
         sourceAccount: element.getAttribute('sourceAccount') || '',
-        status: element.getAttribute('status') as SourceStatus,
+        status: status as SourceStatus,
         isLocal: element.getAttribute('isLocal') === 'true',
         isMultiroomAllowed: element.getAttribute('multiroomallowed') === 'true'
     }

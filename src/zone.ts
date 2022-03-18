@@ -10,8 +10,12 @@ export function zoneFromElement(element: XMLElement): Zone | undefined {
     if(!element.hasAttribute('master')) {
         return undefined;
     }
+    const master = element.getAttribute('master');
+    if(!master) {
+        return undefined;
+    }
     return {
-        master: element.getAttribute('master'),
+        master,
         members: compactMap(element.getList('member'), memberFromElement)
     }
 }

@@ -13,8 +13,12 @@ export function volumeFromElement(element: XMLElement): Volume | undefined {
     if(!element.hasAttribute('deviceID') || !targetString || !actualString) {
         return undefined;
     }
+    const deviceId = element.getAttribute('deviceID');
+    if(!deviceId) {
+        return undefined;
+    }
     return {
-        deviceId: element.getAttribute('deviceID'),
+        deviceId,
         target: targetString ? parseInt(targetString) : 0,
         actual: actualString ? parseInt(actualString) : 0,
         isMuted: element.getText('muteenabled') === 'true'

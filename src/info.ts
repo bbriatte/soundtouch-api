@@ -15,11 +15,19 @@ export function infoFromElement(element: XMLElement): Info | undefined {
         || !element.hasChildren(['name', 'type', 'components', 'networkInfo'])) {
         return undefined;
     }
+    const deviceId = element.getAttribute('deviceID');
+    const name = element.getText('name');
+    const type = element.getText('type');
+    const components = element.getChild('components');
+    const networkInfo = element.getList('networkInfo');
+    if(!deviceId || !name || !type || !components || !networkInfo) {
+        return undefined;
+    }
     return {
-        deviceId: element.getAttribute('deviceID'),
-        name: element.getText('name'),
-        type: element.getText('type'),
-        components: compactMap(element.getChild('components').getList('component'), componentFromElement),
-        networkInfo: compactMap(element.getList('networkInfo'), networkInfoFromElement)
+        deviceId,
+        name,
+        type,
+        components: compactMap(components.getList('component'), componentFromElement),
+        networkInfo: compactMap(networkInfo, networkInfoFromElement)
     };
 }

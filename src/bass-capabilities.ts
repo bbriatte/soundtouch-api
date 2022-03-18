@@ -12,11 +12,15 @@ export function bassCapabilitiesFromElement(element: XMLElement): BassCapabiliti
     if(!element.hasAttribute('deviceID')) {
         return undefined;
     }
+    const deviceId = element.getAttribute('deviceID');
+    if(!deviceId) {
+        return undefined;
+    }
     const bassMinString = element.getText('bassMin');
     const bassMaxString = element.getText('bassMax');
     const bassDefaultString = element.getText('bassDefault');
     return {
-        deviceId: element.getAttribute('deviceID'),
+        deviceId,
         isAvailable: element.getText('bassAvailable') === 'true',
         min: bassMinString ? parseInt(bassMinString) : undefined,
         max: bassMaxString ? parseInt(bassMaxString) : undefined,

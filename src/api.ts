@@ -1,7 +1,6 @@
 'use strict';
 
 import {Info, infoFromElement} from './info';
-import * as request from 'request-promise';
 import {APIErrors, errorFromElement} from './error';
 import {Endpoints} from './endpoints';
 import {Builder, convertableToString, OptionsV2, parseString} from 'xml2js';
@@ -18,6 +17,7 @@ import {Preset, presetFromElement} from './preset';
 import {Group, groupFromElement} from './group';
 import {promisify} from 'util';
 import {ContentItem, contentItemToElement} from './content-item';
+import axios, {AxiosError, AxiosInstance} from "axios";
 
 const XMLParsePromise = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
 
@@ -26,17 +26,26 @@ export class API {
     readonly host: string;
     readonly port: number;
     private readonly XMLBuilder: Builder;
+    private axiosInstance: AxiosInstance;
 
     constructor(host: string, port: number = 8090) {
         this.host = host;
         this.port = port;
+        this.axiosInstance = axios.create({
+            headers: {
+                'content-type': 'application/xml'
+            }
+        })
         this.XMLBuilder = new Builder();
     }
 
     async getInfo(): Promise<Info | undefined> {
         const element = await this._get(Endpoints.info);
         if(element.hasChild('info')) {
-            return infoFromElement(element.getChild('info'));
+            const info = element.getChild('info');
+            if(info) {
+                return infoFromElement(info);
+            }
         }
         return undefined;
     }
@@ -51,7 +60,10 @@ export class API {
     async getVolume(): Promise<Volume | undefined> {
         const element = await this._get(Endpoints.volume);
         if(element.hasChild('volume')) {
-            return volumeFromElement(element.getChild('volume'));
+            const volume = element.getChild('volume');
+            if(volume) {
+                return volumeFromElement(volume);
+            }
         }
         return undefined;
     }
@@ -81,7 +93,10 @@ export class API {
     async getNowPlaying(): Promise<NowPlaying | undefined> {
         const element = await this._get(Endpoints.nowPlaying);
         if(element.hasChild('nowPlaying')) {
-            return nowPlayingFromElement(element.getChild('nowPlaying'));
+            const nowPlaying = element.getChild('nowPlaying');
+            if(nowPlaying) {
+                return nowPlayingFromElement(nowPlaying);
+            }
         }
         return undefined;
     }
@@ -94,7 +109,10 @@ export class API {
     async getSources(): Promise<Sources | undefined> {
         const element = await this._get(Endpoints.sources);
         if(element.hasChild('sources')) {
-            return sourcesFromElement(element.getChild('sources'));
+            const sources = element.getChild('sources');
+            if(sources) {
+                return sourcesFromElement(sources);
+            }
         }
         return undefined;
     }
@@ -102,7 +120,10 @@ export class API {
     async getZone(): Promise<Zone | undefined> {
         const element = await this._get(Endpoints.getZone);
         if(element.hasChild('zone')) {
-            return zoneFromElement(element.getChild('zone'));
+            const zone = element.getChild('zone');
+            if(zone) {
+                return zoneFromElement(zone);
+            }
         }
         return undefined;
     }
@@ -122,7 +143,10 @@ export class API {
     async getBassCapabilities(): Promise<BassCapabilities | undefined> {
         const element = await this._get(Endpoints.bassCapabilities);
         if(element.hasChild('bassCapabilities')) {
-            return bassCapabilitiesFromElement(element.getChild('bassCapabilities'));
+            const bassCapabilities = element.getChild('bassCapabilities');
+            if(bassCapabilities) {
+                return bassCapabilitiesFromElement(bassCapabilities);
+            }
         }
         return undefined;
     }
@@ -130,7 +154,10 @@ export class API {
     async getBass(): Promise<Bass | undefined> {
         const element = await this._get(Endpoints.bass);
         if(element.hasChild('bass')) {
-            return bassFromElement(element.getChild('bass'));
+            const bass = element.getChild('bass');
+            if(bass) {
+                return bassFromElement(bass);
+            }
         }
         return undefined;
     }
@@ -146,8 +173,10 @@ export class API {
         const element = await this._get(Endpoints.presets);
         if(element.hasChild('presets')) {
             const presets = element.getChild('presets');
-            if(presets.hasChild('preset')) {
-                return compactMap(presets.getList('preset'), presetFromElement);
+            if(presets) {
+                if(presets.hasChild('preset')) {
+                    return compactMap(presets.getList('preset'), presetFromElement);
+                }
             }
         }
         return undefined;
@@ -158,7 +187,10 @@ export class API {
             name: value
         });
         if(element.hasChild('info')) {
-            return infoFromElement(element.getChild('info'));
+            const info = element.getChild('info');
+            if(info) {
+                return infoFromElement(info);
+            }
         }
         return undefined;
     }
@@ -166,7 +198,10 @@ export class API {
     async getGroup(): Promise<Group | undefined> {
         const element = await this._get(Endpoints.getGroup);
         if(element.hasChild('group')) {
-            return groupFromElement(element.getChild('group'));
+            const group = element.getChild('group');
+            if(group) {
+                return groupFromElement(group);
+            }
         }
         return undefined;
     }
@@ -175,11 +210,17 @@ export class API {
 
     private static _throwAPIErrors(root: XMLElement) {
         if(root.hasChild('errors')) {
-            throw APIErrors.fromElement(root.getChild('errors'));
+            const errors = root.getChild('errors');
+            if(errors) {
+                throw APIErrors.fromElement(errors);
+            }
         } else if(root.hasChild('Error')) {
-            const err = errorFromElement(root.getChild('Error'));
-            if(err) {
-                throw new APIErrors([err]);
+            const errElement = root.getChild('Error');
+            if(errElement) {
+                const err = errorFromElement(errElement);
+                if(err) {
+                    throw new APIErrors([err]);
+                }
             }
         }
     }
@@ -189,20 +230,15 @@ export class API {
         let xml;
         try {
             if(method === 'GET') {
-                xml = await request.get(url);
+                xml = await this.axiosInstance.get(url);
             } else {
-                xml = await request.post(url, {
-                    headers: {
-                        'Content-Type': 'application/xml'
-                    },
-                    body: this.XMLBuilder.buildObject(body)
-                });
+                xml = await this.axiosInstance.post(url, this.XMLBuilder.buildObject(body));
             }
-        } catch(err) {
+        } catch(err: any) {
             if(!err.response) {
                 throw err;
             }
-            xml = err.response.body;
+            xml = err.response.data;
         }
         const data = await XMLParsePromise(xml, {
             trim: true
@@ -212,11 +248,11 @@ export class API {
         return root;
     }
 
-    private async _get(endpoint: Endpoints): Promise<XMLElement> {
+    private _get(endpoint: Endpoints): Promise<XMLElement> {
         return this._req('GET', endpoint);
     }
 
-    private async _post(endpoint: Endpoints, body: object): Promise<XMLElement> {
+    private _post(endpoint: Endpoints, body: object): Promise<XMLElement> {
         return this._req('POST', endpoint, body);
     }
 

@@ -10,10 +10,14 @@ export function bassFromElement(element: XMLElement): Bass | undefined {
     if(!element.hasAttribute('deviceID')) {
         return undefined;
     }
+    const deviceId = element.getAttribute('deviceID');
+    if(!deviceId) {
+        return undefined;
+    }
     const targetBassString = element.getText('targetbass');
     const actualBassString = element.getText('actualbass');
     return {
-        deviceId: element.getAttribute('deviceID'),
+        deviceId,
         target: targetBassString ? parseInt(targetBassString) : 0,
         actual: actualBassString ? parseInt(actualBassString) : 0,
     }

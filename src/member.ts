@@ -9,8 +9,13 @@ export function memberFromElement(element: XMLElement): Member | undefined {
     if(!element.hasAttribute('ipaddress')) {
         return undefined;
     }
+    const deviceId = element.getText();
+    const ipAddress = element.getAttribute('ipaddress');
+    if(!deviceId || !ipAddress) {
+        return undefined;
+    }
     return {
-        deviceId: element.getText(),
-        ipAddress: element.getAttribute('ipaddress')
+        deviceId,
+        ipAddress
     }
 }

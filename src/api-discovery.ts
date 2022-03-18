@@ -28,7 +28,7 @@ export class APIDiscovery {
             const bonjour: Bonjour = initBonjour();
             let timer = setTimeout(() => {
                 bonjour.destroy();
-                resolve();
+                resolve(undefined);
             }, duration);
             bonjour.find({
                 type: 'soundtouch',

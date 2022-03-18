@@ -39,16 +39,31 @@ export function nowPlayingFromElement(element: XMLElement): NowPlaying | undefin
     const artElement = element.getChild('art');
     const timeElement = element.getChild('time');
     const csiElement = element.getChild('ConnectionStatusInfo');
+    const deviceId = element.getAttribute('deviceID');
+    const source = element.getAttribute('source');
+    const contentItemElement = element.getChild('ContentItem');
+    if(!artElement || !timeElement || !csiElement || !deviceId || !source || !contentItemElement) {
+        return undefined;
+    }
+    const rating = element.getText('rating');
+    const playStatus = element.getText('playStatus');
+    const shuffleSetting = element.getText('shuffleSetting');
+    const repeatSetting = element.getText('repeatSetting');
+    const streamType = element.getText('streamType');
+    const contentItem = contentItemFromElement(contentItemElement);
+    if(!contentItem) {
+        return undefined;
+    }
     return {
-        deviceId: element.getAttribute('deviceID'),
-        source: element.getAttribute('source'),
+        deviceId,
+        source,
         sourceAccount: element.getAttribute('sourceAccount') || '',
-        contentItem: contentItemFromElement(element.getChild('ContentItem')),
+        contentItem,
         track: element.getText('track'),
         artist: element.getText('artist'),
         album: element.getText('album'),
         genre: element.getText('genre'),
-        rating: element.getText('rating') as Rate || Rate.none,
+        rating: rating ? rating as Rate : Rate.none,
         stationName: element.getText('stationName'),
         art: artElement ? artFromElement(artElement) : undefined,
         time: timeElement ? timeFromElement(timeElement) : undefined,
@@ -57,10 +72,10 @@ export function nowPlayingFromElement(element: XMLElement): NowPlaying | undefin
         isFavoriteEnabled: element.hasChild('favoriteEnabled'),
         isFavorite: element.hasChild('isFavorite'),
         isRateEnabled: element.hasChild('rateEnabled'),
-        playStatus: element.getText('playStatus') as PlayStatus,
-        shuffleSetting: element.getText('shuffleSetting') as ShuffleStatus,
-        repeatSetting: element.getText('repeatSetting') as RepeatStatus,
-        streamType: element.getText('streamType') as StreamStatus,
+        playStatus: playStatus ? playStatus as PlayStatus : undefined,
+        shuffleSetting: shuffleSetting ? shuffleSetting as ShuffleStatus : undefined,
+        repeatSetting: repeatSetting ? repeatSetting as RepeatStatus : undefined,
+        streamType: streamType ? streamType as StreamStatus : undefined,
         stationLocation: element.getText('stationLocation'),
         connectionStatusInfo: csiElement ? connectionStatusInfoFromElement(csiElement) : undefined
     };

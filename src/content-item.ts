@@ -12,8 +12,12 @@ export function contentItemFromElement(element: XMLElement): ContentItem | undef
     if(!element.hasAttribute('source')) {
         return undefined;
     }
+    const source = element.getAttribute('source');
+    if(!source) {
+        return undefined;
+    }
     return {
-        source: element.getAttribute('source'),
+        source,
         sourceAccount: element.getAttribute('sourceAccount') || '',
         location: element.getAttribute('location'),
         isPresetable: element.getAttribute('isPresetable') === 'true',

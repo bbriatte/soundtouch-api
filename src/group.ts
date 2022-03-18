@@ -21,11 +21,18 @@ export function groupFromElement(element: XMLElement): Group | undefined {
         return undefined;
     }
     const roles = element.getChild('roles');
+    const id = element.getAttribute('id');
+    const name = element.getText('name');
+    const masterDeviceId = element.getText('masterDeviceId');
+    const status = element.getText('status');
+    if(!roles || !id || !name || !masterDeviceId || !status) {
+        return undefined;
+    }
     return {
-        id: element.getAttribute('id'),
-        name: element.getText('name'),
-        masterDeviceId: element.getText('masterDeviceId'),
-        status: element.getText('status'),
+        id,
+        name,
+        masterDeviceId,
+        status,
         roles: compactMap(roles.getList('groupRole'), roleFromElement)
     }
 }
@@ -34,9 +41,15 @@ export function roleFromElement(element: XMLElement): Role | undefined {
     if(!element.hasChildren(['deviceId', 'role', 'ipAddress'])) {
         return undefined;
     }
+    const deviceId = element.getText('deviceId');
+    const ipAddress = element.getText('ipAddress');
+    const role = element.getText('role');
+    if(!deviceId || !ipAddress || !role) {
+        return undefined;
+    }
     return {
-        deviceId: element.getText('deviceId'),
-        ipAddress: element.getText('ipAddress'),
-        location: element.getText('role') as GroupLocation,
+        deviceId,
+        ipAddress,
+        location: role as GroupLocation,
     }
 }
