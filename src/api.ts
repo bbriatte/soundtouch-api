@@ -3,7 +3,7 @@
 import {Info, infoFromElement} from './info';
 import {APIErrors, errorFromElement} from './error';
 import {Endpoints} from './endpoints';
-import {Builder, convertableToString, OptionsV2, parseString} from 'xml2js';
+import {Builder as XMLBuilder, convertableToString, OptionsV2, parseString} from 'xml2js';
 import {compactMap, XMLElement} from './utils';
 import {PlayInfo} from './play-info';
 import {KeyState, KeyValue} from './special-types';
@@ -17,16 +17,16 @@ import {Preset, presetFromElement} from './preset';
 import {Group, groupFromElement} from './group';
 import {promisify} from 'util';
 import {ContentItem, contentItemToElement} from './content-item';
-import axios, {AxiosError, AxiosInstance} from "axios";
+import axios, {AxiosInstance} from "axios";
 
-const XMLParsePromise = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
+const parseXML = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
 
 export class API {
 
-    readonly host: string;
-    readonly port: number;
-    private readonly XMLBuilder: Builder;
-    private axiosInstance: AxiosInstance;
+    private readonly host: string;
+    private readonly port: number;
+    private readonly builder: XMLBuilder;
+    private readonly axiosInstance: AxiosInstance;
 
     constructor(host: string, port: number = 8090) {
         this.host = host;
@@ -36,7 +36,7 @@ export class API {
                 'content-type': 'application/xml'
             }
         })
-        this.XMLBuilder = new Builder();
+        this.builder = new XMLBuilder();
     }
 
     async getInfo(): Promise<Info | undefined> {
@@ -230,9 +230,9 @@ export class API {
         let xml;
         try {
             if(method === 'GET') {
-                xml = await this.axiosInstance.get(url);
+                xml = (await this.axiosInstance.get(url)).data;
             } else {
-                xml = await this.axiosInstance.post(url, this.XMLBuilder.buildObject(body));
+                xml = (await this.axiosInstance.post(url, this.builder.buildObject(body))).data;
             }
         } catch(err: any) {
             if(!err.response) {
@@ -240,9 +240,7 @@ export class API {
             }
             xml = err.response.data;
         }
-        const data = await XMLParsePromise(xml, {
-            trim: true
-        });
+        const data = await parseXML(xml, { trim: true });
         const root = new XMLElement(data);
         API._throwAPIErrors(root);
         return root;
