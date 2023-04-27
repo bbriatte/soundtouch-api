@@ -1,12 +1,12 @@
 import * as initBonjour from 'bonjour';
-import {Bonjour} from 'bonjour';
+import {Bonjour, RemoteService} from 'bonjour';
 import {API} from './api';
 
 export class APIDiscovery {
 
     private constructor() {}
 
-    static async search(duration: number = 5000): Promise<API[]> {
+    static async search(duration: number = 10000): Promise<API[]> {
         const apis: API[] = [];
         const bonjour: Bonjour = initBonjour();
         bonjour.find({
@@ -23,7 +23,7 @@ export class APIDiscovery {
         return apis;
     }
 
-    static async find(name: string, duration: number = 5000): Promise<API | undefined> {
+    static async find(name: string, duration: number = 10000): Promise<API | undefined> {
         return new Promise<API | undefined>((resolve) => {
             const bonjour: Bonjour = initBonjour();
             let timer = setTimeout(() => {
@@ -47,12 +47,18 @@ export class APIDiscovery {
     }
 }
 
-function _APIFromService(service?: any): API | undefined {
-    if(service
-        && service.addresses instanceof Array
-        && service.addresses.length > 0) {
+function _APIFromService(service?: RemoteService): API | undefined {
+    if(service && service.addresses.length > 0) {
         const ipAddress = service.addresses[0];
-        return new API(ipAddress, service.port);
+        return new API({
+            ip: ipAddress,
+            host: service.host,
+            port: service.port,
+            name: service.name,
+            mac: service.txt['mac'],
+            manufacturer: service.txt['manufacturer'],
+            model: service.txt['model']
+        });
     }
     return undefined;
 }

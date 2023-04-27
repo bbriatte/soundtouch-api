@@ -19,21 +19,29 @@ import {promisify} from 'util';
 import {ContentItem, contentItemToElement} from './content-item';
 import axios, {AxiosInstance} from "axios";
 
-const parseXML = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error, res: any) => void) => parseString(xml, options, cb));
+const parseXML = promisify((xml: convertableToString, options: OptionsV2, cb: (err: Error | null, res: any) => void) => parseString(xml, options, cb));
+
+export interface Device {
+    ip: string;
+    port: number;
+    name: string;
+    host?: string;
+    mac?: string;
+    manufacturer?: string;
+    model?: string;
+}
 
 export class API {
 
-    private readonly host: string;
-    private readonly port: number;
+    private readonly device: Device;
     private readonly builder: XMLBuilder;
     private readonly axiosInstance: AxiosInstance;
 
-    constructor(host: string, port: number = 8090) {
-        this.host = host;
-        this.port = port;
+    constructor(device: Device) {
+        this.device = device;
         this.axiosInstance = axios.create({
             headers: {
-                'content-type': 'application/xml'
+                'Content-Type': 'application/xml'
             }
         })
         this.builder = new XMLBuilder();
@@ -226,7 +234,7 @@ export class API {
     }
 
     private async _req(method: string, endpoint: Endpoints, body?: object): Promise<XMLElement> {
-        const url = `http://${this.host}:${this.port}/${endpoint}`;
+        const url = `http://${this.device.ip}:${this.device.port}/${endpoint}`;
         let xml;
         try {
             if(method === 'GET') {

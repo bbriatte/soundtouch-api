@@ -12,7 +12,7 @@ export interface Source {
     readonly sourceAccount: string;
     readonly status: SourceStatus;
     readonly isLocal: boolean;
-    readonly isMultiroomAllowed: boolean;
+    readonly isMultiRoomAllowed: boolean;
 }
 
 export function sourcesFromElement(element: XMLElement): Sources | undefined {
@@ -45,6 +45,6 @@ export function sourceFromElement(element: XMLElement): Source | undefined {
         sourceAccount: element.getAttribute('sourceAccount') || '',
         status: status as SourceStatus,
         isLocal: element.getAttribute('isLocal') === 'true',
-        isMultiroomAllowed: element.getAttribute('multiroomallowed') === 'true'
+        isMultiRoomAllowed: element.getAttribute('multiroomallowed') === 'true'
     }
 }

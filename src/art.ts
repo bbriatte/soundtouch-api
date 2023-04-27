@@ -1,5 +1,5 @@
 import {ArtStatus} from './special-types';
-import {XMLElement} from './utils/xml-element';
+import {XMLElement} from './utils';
 
 export interface Art {
     readonly status: ArtStatus,

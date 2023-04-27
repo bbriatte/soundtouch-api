@@ -1,4 +1,4 @@
-import {XMLElement} from './utils/xml-element';
+import {XMLElement} from './utils';
 import {ContentItem, contentItemFromElement} from './content-item';
 
 export interface Preset {

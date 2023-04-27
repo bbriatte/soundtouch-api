@@ -48,7 +48,11 @@ Change the volume of a specific device IP on your local network
 
 ```typescript
 async function updateVolume(): Promise<number | undefined> {
-    const api = new API('192.168.0.20');
+    const api = new API({
+        ip: '192.168.0.20',
+        port: 8090,
+        name: 'My SoundTouch Speaker'
+    });
     const success = await api.setVolume(28);
     if(!success) {
         return undefined;
